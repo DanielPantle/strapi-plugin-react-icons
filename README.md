@@ -27,17 +27,17 @@ yarn build
 npm run build
 ```
 
+## Usage
+ - Select your prefered icon libraries on the settings page.
+ - Add react-icon as custom field to your content type.
+ - Press the search icon to select a icon from any of the selected icon libraries.
+
 ## Planned features
  - [x] custom field for react-icons
  - [x] selection modal for the custom field
  - [x] settings page for enabling / disabling icon libraries
  - [ ] default selection for icon library
  - [ ] search in the selection modal
-
-## Usage
- - Select your prefered icon libraries on the settings page.
- - Add react-icon as custom field to your content type.
- - Press the search icon to select a icon from any of the selected icon libraries.
  
 ## Contributing and developing
 Feel free to post any PR or issues :)
