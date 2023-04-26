@@ -11,10 +11,10 @@ To install this plugin, you need to add an NPM dependency to your Strapi applica
 
 ```sh
 # Using Yarn
-yarn add @strapi/plugin-color-picker
+yarn add strapi-plugin-react-icons
 
 # Or using NPM
-npm install @strapi/plugin-color-picker
+npm install strapi-plugin-react-icons
 ```
 
 Then, you'll need to build your admin panel:
