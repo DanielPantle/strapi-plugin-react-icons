@@ -1,0 +1,37 @@
+{
+    "kind": "collectionType",
+    "collectionName": "iconlibrary",
+    "info": {
+        "singularName": "iconlibrary",
+        "pluralName": "iconlibraries",
+        "displayName": "IconLibrary"
+    },
+    "options": {
+        "draftAndPublish": false,
+        "comment": ""
+    },
+    "pluginOptions": {
+        "content-manager": {
+            "visible": false
+        },
+        "content-type-builder": {
+            "visible": false
+        }
+    },
+    "attributes": {
+        "name": {
+            "type": "string",
+            "required": true
+        },
+        "abbreviation": {
+            "type": "string",
+            "required": true,
+            "unique": true,
+            "maxLength": 3
+        },
+        "isEnabled": {
+            "type": "boolean",
+            "default": true
+        }
+    }
+}
