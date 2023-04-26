@@ -28,9 +28,30 @@ npm run build
 ```
 
 ## Usage
+### Usage in strapi
  - Select your prefered icon libraries on the settings page.
  - Add react-icon as custom field to your content type.
  - Press the search icon to select a icon from any of the selected icon libraries.
+
+### Usage in React / Next.js
+Create the following IconComponent to dynamically show the icon:
+```
+import * as ReactIcons from "react-icons/all";
+
+interface IIconComponent {
+  icon: string;
+  size?: number;
+}
+type IReactIcon = keyof typeof ReactIcons;
+
+const IconComponent: React.FC<IIconComponent> = ({ icon, size }) => {
+  const DynamicIconComponent = ReactIcons[icon as IReactIcon];
+
+  if (undefined === DynamicIconComponent) return <></>;
+
+  return <DynamicIconComponent size={size} />;
+};
+```
 
 ## Planned features
  - [x] custom field for react-icons
