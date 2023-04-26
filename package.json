@@ -1,5 +1,5 @@
 {
-  "name": "react-icons",
+  "name": "strapi-plugin-react-icons",
   "version": "0.1.0",
   "description": "A plugin for strapi to select react icons.",
   "strapi": {
