@@ -4,7 +4,7 @@ const getService = (strapi) => strapi.plugin('react-icons').service('iconLibrary
 exports.default = ({ strapi }) => ({
     async find(ctx) {
         try {
-            ctx.body = getService(strapi).find(ctx.query);
+            ctx.body = await getService(strapi).find(ctx.query);
         }
         catch (error) {
             ctx.throw(500, error);
@@ -13,7 +13,7 @@ exports.default = ({ strapi }) => ({
     async create(ctx) {
         try {
             await getService(strapi).create(ctx.request.body);
-            ctx.body = await this.find();
+            ctx.body = await getService(strapi).find();
         }
         catch (error) {
             ctx.throw(500, error);
@@ -22,7 +22,7 @@ exports.default = ({ strapi }) => ({
     async update(ctx) {
         try {
             await getService(strapi).update(ctx.params.id, ctx.request.body);
-            ctx.body = await this.find();
+            ctx.body = await getService(strapi).find();
         }
         catch (error) {
             ctx.throw(500, error);

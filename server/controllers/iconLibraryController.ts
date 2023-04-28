@@ -6,7 +6,7 @@ export default ({ strapi }: { strapi: Strapi }) => ({
 
   async find(ctx: any) {
     try {
-      ctx.body = getService(strapi).find(ctx.query)
+      ctx.body = await getService(strapi).find(ctx.query)
     } catch (error) {
       ctx.throw(500, error)
     }
@@ -14,7 +14,7 @@ export default ({ strapi }: { strapi: Strapi }) => ({
   async create(ctx: any) {
     try {
       await getService(strapi).create(ctx.request.body)
-      ctx.body = await this.find()
+      ctx.body = await getService(strapi).find()
     } catch (error) {
       ctx.throw(500, error)
     }
@@ -22,7 +22,7 @@ export default ({ strapi }: { strapi: Strapi }) => ({
   async update(ctx: any) {
     try {
       await getService(strapi).update(ctx.params.id, ctx.request.body)
-      ctx.body = await this.find()
+      ctx.body = await getService(strapi).find()
     } catch (error) {
       ctx.throw(500, error)
     }
