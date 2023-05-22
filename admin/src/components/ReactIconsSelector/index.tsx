@@ -13,6 +13,7 @@ import {
 	Option,
 } from "@strapi/design-system";
 import { TextInput as OriginalTextInput } from "@strapi/design-system";
+import styled from "styled-components";
 import * as ReactIcons from "react-icons/all";
 import { Cross } from "@strapi/icons";
 import { SearchIcon } from "@strapi/icons";
@@ -156,7 +157,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
 				startAction={
 					<FieldAction onClick={toggleModal} style={inputButtonStyle} left="0">
 						{value ? (
-							<IconComponent icon={value} width="1.25rem" height="1.25rem" />
+							<IconComponent icon={value} />
 						) : (
 							<ReactIcons.TbSearch width="1.25rem" height="1.25rem" />
 						)}
