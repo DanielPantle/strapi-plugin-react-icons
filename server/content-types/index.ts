@@ -1,5 +1,5 @@
-import iconlibrary from './iconlibrary';
+import iconlibrary from "./iconlibrary";
 
 export default {
-  iconlibrary,
+	iconlibrary,
 };
