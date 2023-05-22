@@ -1,5 +1,5 @@
-import iconLibraryService from './iconLibraryService';
+import iconLibraryService from "./iconLibraryService";
 
 export default {
-  iconLibraryService,
+	iconLibraryService,
 };
