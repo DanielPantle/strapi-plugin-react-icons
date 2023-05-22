@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const getService = (strapi) => strapi.plugin('react-icons').service('iconLibraryService');
+const getService = (strapi) => strapi.plugin("react-icons").service("iconLibraryService");
 exports.default = ({ strapi }) => ({
     async find(ctx) {
         try {
@@ -35,5 +35,5 @@ exports.default = ({ strapi }) => ({
         catch (error) {
             ctx.throw(500, error);
         }
-    }
+    },
 });
