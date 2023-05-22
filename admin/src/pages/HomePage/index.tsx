@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { request } from "@strapi/helper-plugin";
+import { useFetchClient } from "@strapi/helper-plugin";
 import {
   Button,
   IconButton,
@@ -31,18 +31,18 @@ import * as ReactIcons from "react-icons/all";
 const HomePage = () => {
   const [iconLibraries, setIconLibraries] = useState<IIconLibrary[]>([]);
 
+  const client = useFetchClient();
+
   const getIconLibraries = async () => {
-    setIconLibraries([
-      ...(await request("/react-icons/iconlibrary/find", {
-        method: "GET",
-      })),
-    ]);
+    const response = await client.get("/react-icons/iconlibrary/find");
+    setIconLibraries([...response.data]);
   };
 
   const updateIconLibrary = async (id: string, isEnabled: boolean) => {
-    await request(`/react-icons/iconlibrary/update/${id}`, {
-      method: "PUT",
-      body: { data: { isEnabled: isEnabled } },
+    await client.put(`/react-icons/iconlibrary/update/${id}`, {
+      data: {
+        isEnabled: isEnabled,
+      },
     });
     setIconLibraries((current) => {
       return current.map((iconLibrary) =>
@@ -57,19 +57,17 @@ const HomePage = () => {
   };
 
   const deleteIconLibrary = async (id: string) => {
-    await request(`/react-icons/iconlibrary/delete/${id}`, {
-      method: "DELETE",
-    });
+    await client.del(`/react-icons/iconlibrary/delete/${id}`);
     setIconLibraries((current) =>
       current.filter((iconLibrary) => iconLibrary.id !== id)
     );
   };
 
   const importDefaultIconLibraries = async () => {
-    (await import("../../data/default.json")).default.forEach(async (entry) => {
-      await request("/react-icons/iconlibrary/post", {
-        method: "POST",
-        body: { data: entry },
+    const defaultData = (await import("../../data/default.json")).default;
+    defaultData.forEach(async (entry) => {
+      await client.post("/react-icons/iconlibrary/post", {
+        data: entry,
       });
     });
 
@@ -99,8 +97,13 @@ const HomePage = () => {
         subtitle="Select the react-icon libraries you want to have enabled."
         as="h2"
         primaryAction={
-          <Button onClick={importDefaultIconLibraries}>
-            Import default icon libraries
+          <Button
+            onClick={importDefaultIconLibraries}
+            disabled={iconLibraries.length > 0}
+          >
+            {iconLibraries.length > 0
+              ? "Libraries are already imported!"
+              : "Import default icon libraries"}
           </Button>
         }
       />
