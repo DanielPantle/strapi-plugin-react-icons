@@ -18,6 +18,7 @@ import { Cross } from "@strapi/icons";
 import { SearchIcon } from "@strapi/icons";
 import { useIntl, MessageDescriptor } from "react-intl";
 import { request } from "@strapi/helper-plugin";
+import { IconContext } from "react-icons/lib";
 
 interface IReactIconsSelector {
   description: null | MessageDescriptor;
@@ -37,12 +38,20 @@ interface IIconComponent {
 
 type IReactIcon = keyof typeof ReactIcons;
 
+const strapiTheme = window.localStorage.STRAPI_THEME;
+
 const IconComponent: React.FC<IIconComponent> = ({ icon, size }) => {
   const DynamicIconComponent = ReactIcons[icon as IReactIcon];
 
   if (undefined === DynamicIconComponent) return <></>;
 
-  return <DynamicIconComponent size={size} />;
+  return (
+    <IconContext.Provider
+      value={{ color: strapiTheme === "light" ? "#212134" : "#a5a5ba" }}
+    >
+      <DynamicIconComponent size={size} />
+    </IconContext.Provider>
+  );
 };
 
 const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
@@ -114,13 +123,13 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
         error={error}
         startAction={
           <FieldAction onClick={toggleModal}>
-            {value ? <IconComponent icon={value} /> : <SearchIcon />}
+            {value ? <IconComponent icon={value} /> : <ReactIcons.TbSearch />}
           </FieldAction>
         }
         endAction={
           !!value && (
             <FieldAction onClick={() => changeIcon("")}>
-              <Cross />
+              <ReactIcons.TbX />
             </FieldAction>
           )
         }
