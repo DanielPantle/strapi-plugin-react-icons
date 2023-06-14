@@ -16,11 +16,11 @@ export default {
 			icon: PluginIcon,
 			type: "string",
 			intlLabel: {
-				id: getTrad("react-icons.label"),
+				id: getTrad("strapi-react-icons.label"),
 				defaultMessage: "react-icon",
 			},
 			intlDescription: {
-				id: getTrad("react-icons.description"),
+				id: getTrad("strapi-react-icons.description"),
 				defaultMessage: "Select a react-icon",
 			},
 			components: {
@@ -41,12 +41,14 @@ export default {
 								name: "required",
 								type: "checkbox",
 								intlLabel: {
-									id: getTrad("react-icons.options.advanced.requiredField"),
+									id: getTrad(
+										"strapi-react-icons.options.advanced.requiredField"
+									),
 									defaultMessage: "Required field",
 								},
 								description: {
 									id: getTrad(
-										"react-icons.options.advanced.requiredField.description"
+										"strapi-react-icons.options.advanced.requiredField.description"
 									),
 									defaultMessage:
 										"You won't be able to create an entry if this field is empty",

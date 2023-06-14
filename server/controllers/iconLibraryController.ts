@@ -1,7 +1,7 @@
 import { Strapi } from "@strapi/strapi";
 
 const getService = (strapi) =>
-	strapi.plugin("react-icons").service("iconLibraryService");
+	strapi.plugin("strapi-react-icons").service("iconLibraryService");
 
 export default ({ strapi }: { strapi: Strapi }) => ({
 	async find(ctx: any) {
