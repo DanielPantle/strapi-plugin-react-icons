@@ -10,26 +10,39 @@ import {
   Select,
   FieldAction,
   Option,
+  Searchbar,
+  SearchForm,
 } from "@strapi/design-system";
 import { TextInput as OriginalTextInput } from "@strapi/design-system";
 import styled from "styled-components";
-import * as ReactIcons from "react-icons/all";
+import * as ReactIcons from "../../data/all-icons";
 import { useIntl } from "react-intl";
 import { useFetchClient } from "@strapi/helper-plugin";
 import { IconContext } from "react-icons/lib";
-import { FixedSizeGrid as Grid } from "react-window";
+import { FixedSizeGrid } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+
+// Force TypeScript to treat AutoSizer as a valid JSX component using a type assertion to 'any'
+const AutoSizerComponent = AutoSizer as any;
 
 type IReactIcon = keyof typeof ReactIcons;
 
 const strapiTheme = window.localStorage.STRAPI_THEME;
 
 const inputButtonStyle = {
-  background: "#0021a4",
+  border: "1px solid",
+  overflow: "hidden",
   position: "absolute",
   bottom: 0,
   width: "5rem",
   height: "100%",
   justifyContent: "center",
+} as React.CSSProperties;
+
+const searchFormStyle = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "5vh",
 } as React.CSSProperties;
 
 const TextInputContainer = styled.div`
@@ -41,6 +54,27 @@ const TextInputContainer = styled.div`
   & input[type="text"] {
     width: calc(100% - 10rem);
     text-align: center;
+  }
+`;
+
+// Add this styled component outside the ReactIconsSelector component
+const CustomScrollModalBody = styled(FixedSizeGrid)`
+  &::-webkit-scrollbar {
+    width: 0.65vw;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: rgba(165, 165, 186, 1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(123, 121, 255, 1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.4);
   }
 `;
 
@@ -84,7 +118,9 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
   const [selectedIconLibrary, setSelectedIconLibrary] = useState<string | null>(
     null
   );
-  const [selectableIcons, setSelectableIcons] = useState([] as IReactIcon[]);
+  const [selectableIcons, setSelectableIcons] = useState(
+    Object.keys(ReactIcons) as IReactIcon[]
+  );
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   // Add a new state for search term
@@ -114,13 +150,13 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
     getIconLibraries();
   }, []);
 
-
   useEffect(() => {
-    setSelectableIcons(
-      Object.keys(ReactIcons).filter((icon) =>
-        icon.toLowerCase()
-      ) as IReactIcon[]
-    );
+    selectedIconLibrary &&
+      setSelectableIcons(
+        Object.keys(ReactIcons).filter((icon) =>
+          icon.toLowerCase().startsWith(selectedIconLibrary)
+        ) as IReactIcon[]
+      );
   }, [selectedIconLibrary, setSelectableIcons]);
 
   return (
@@ -138,7 +174,12 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
         required={required}
         error={error}
         startAction={
-          <FieldAction onClick={toggleModal} style={inputButtonStyle} left="0">
+          <FieldAction
+            onClick={toggleModal}
+            style={inputButtonStyle}
+            left="0"
+            borderRight="5px solid"
+          >
             {value ? (
               <IconComponent icon={value} />
             ) : (
@@ -173,58 +214,86 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
           <ModalBody
             minHeight="70vh"
             maxHeight="unset !important"
-            overflow="hidden"
+            overflow="hidden !important"
           >
-            <TextInput
-              id="icon-search"
-              name="icon-search"
-              label={intlLabel && formatMessage(intlLabel)}
-              value={searchTerm}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearchTerm(e.target.value)
-              }
-              placeholder="Search icons..."
-              margin={"15px"}
-            />
-            <Grid
-              columnCount={11}
-              rowCount={Math.ceil(selectableIcons.length / 11)}
-              columnWidth={100}
-              rowHeight={60}
-              width={1150}
-              height={500}
-            >
-              {({
-                columnIndex,
-                rowIndex,
-                style,
-              }: {
-                columnIndex: number;
-                rowIndex: number;
-                style: React.CSSProperties;
-              }) => {
-                const icon = selectableIcons.filter((icon) =>
-                  icon.toLowerCase().includes(searchTerm.toLowerCase())
-                )[rowIndex * 11 + columnIndex];
+            <SearchForm style={searchFormStyle}>
+              <Searchbar
+                id="icon-search"
+                name="icon-search"
+                onClear={() => setSearchTerm("")}
+                value={searchTerm}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchTerm(e.target.value)
+                }
+                clearLabel="Clearing the plugin search"
+                placeholder="Search icons..."
+              >
+                Search icons...
+              </Searchbar>
+              <AutoSizerComponent>
+                {({ width }: { width: number }) => {
+                  // Set the desired minimum column width and row height
+                  const minDesiredColumnWidth = 85;
+                  const desiredRowHeight = 85;
 
-                if (!icon) return null;
+                  // Calculate the number of columns based on the available width and the desired minimum column width
+                  const fractionalWidth = width - 2 * (window.innerWidth / 100);
+                  const columnCount = Math.floor(
+                    fractionalWidth / minDesiredColumnWidth
+                  );
 
-                return (
-                  <Box
-                    style={style}
-                    width="100%"
-                    key={icon}
-                    variant="secondary"
-                    onClick={() => {
-                      toggleModal();
-                      changeIcon(icon);
-                    }}
-                  >
-                    <IconComponent size={50} icon={icon} />
-                  </Box>
-                );
-              }}
-            </Grid>
+                  // Calculate the actual column width based on the available width and the number of columns
+                  const columnWidth = fractionalWidth / columnCount;
+
+                  // Calculate the number of rows based on the total number of icons and column count
+                  const rowCount = Math.ceil(
+                    selectableIcons.length / columnCount
+                  );
+
+                  return (
+                    <CustomScrollModalBody
+                      columnCount={columnCount}
+                      rowCount={rowCount}
+                      columnWidth={columnWidth}
+                      rowHeight={desiredRowHeight}
+                      width={width}
+                      height={500}
+                    >
+                      {({
+                        columnIndex,
+                        rowIndex,
+                        style,
+                      }: {
+                        columnIndex: number;
+                        rowIndex: number;
+                        style: React.CSSProperties;
+                      }) => {
+                        const icon = selectableIcons.filter((icon) =>
+                          icon.toLowerCase().includes(searchTerm.toLowerCase())
+                        )[rowIndex * columnCount + columnIndex];
+
+                        if (!icon) return null;
+
+                        return (
+                          <Box
+                            style={style}
+                            width="100%"
+                            key={icon}
+                            variant="secondary"
+                            onClick={() => {
+                              toggleModal();
+                              changeIcon(icon);
+                            }}
+                          >
+                            <IconComponent size={65} icon={icon} />
+                          </Box>
+                        );
+                      }}
+                    </CustomScrollModalBody>
+                  );
+                }}
+              </AutoSizerComponent>
+            </SearchForm>
           </ModalBody>
           <ModalFooter
             startActions={

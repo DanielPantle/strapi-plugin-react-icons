@@ -26,7 +26,7 @@ import {
   VisuallyHidden,
 } from "@strapi/design-system";
 import { Trash } from "@strapi/icons";
-import * as ReactIcons from "react-icons/all";
+import * as ReactIcons from "../../data/all-icons";
 
 const HomePage = () => {
   const [iconLibraries, setIconLibraries] = useState<IIconLibrary[]>([]);
@@ -35,6 +35,7 @@ const HomePage = () => {
 
   const getIconLibraries = async () => {
     const response = await client.get("/react-icons/iconlibrary/find");
+    console.log(response.data);
     setIconLibraries([...response.data]);
   };
 

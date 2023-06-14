@@ -1,6 +1,6 @@
 {
 	"name": "strapi-plugin-react-icons",
-	"version": "0.1.4",
+	"version": "0.1.2",
 	"description": "A plugin for strapi to select react icons.",
 	"strapi": {
 		"name": "react-icons",
@@ -11,10 +11,11 @@
 		"@strapi/design-system": "^1.7.7",
 		"@strapi/helper-plugin": "^4.10.5",
 		"@strapi/icons": "^1.7.7",
+		"@types/react-virtualized-auto-sizer": "^1.0.1",
 		"prop-types": "^15.7.2",
 		"react-icons": "^4.8.0",
-		"react-window": "^1.8.9",
-		"react-virtualized-auto-sizer": "^1.0.17"
+		"react-virtualized-auto-sizer": "^1.0.20",
+		"react-window": "^1.8.9"
 	},
 	"devDependencies": {
 		"@strapi/typescript-utils": "^4.10.5",
