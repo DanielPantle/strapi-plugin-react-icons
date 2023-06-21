@@ -10,15 +10,15 @@ import {
   Typography,
   Select,
   FieldAction,
+  Badge,
   Option,
   TextInput,
 } from '@strapi/design-system';
 import * as ReactIcons from 'react-icons/all';
-import { Cross } from '@strapi/icons';
-import { SearchIcon } from '@strapi/icons';
 import { useIntl, MessageDescriptor } from 'react-intl';
 import { request } from '@strapi/helper-plugin';
 import { IconContext } from 'react-icons/lib';
+import getTrad from '../../utils/getTrad';
 
 interface IReactIconsSelector {
   description: null | MessageDescriptor;
@@ -66,7 +66,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
 
   const [iconLibraries, setIconLibraries] = useState<IIconLibrary[]>([]);
   const [selectedIconLibrary, setSelectedIconLibrary] = useState<string | null>(null);
-  const [selectableIcons, setSelectableIcons] = useState([] as IReactIcon[]);
+  const allReactIcons = Object.keys(ReactIcons) as IReactIcon[];
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const toggleModal = () => setIsModalVisible((prev) => !prev);
@@ -93,15 +93,6 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
 
     getIconLibraries();
   }, []);
-
-  useEffect(() => {
-    selectedIconLibrary &&
-      setSelectableIcons(
-        Object.keys(ReactIcons).filter((icon) =>
-          icon.toLowerCase().startsWith(selectedIconLibrary)
-        ) as IReactIcon[]
-      );
-  }, [selectedIconLibrary, setSelectableIcons]);
 
   return (
     <>
@@ -139,41 +130,71 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
             </Typography>
           </ModalHeader>
           <ModalBody>
-            <Flex direction="row" wrap="wrap" gap={2}>
-              {selectedIconLibrary ? (
-                selectableIcons.length > 0 ? (
-                  selectableIcons.map((icon) => (
-                    <Box
-                      key={icon}
-                      variant="secondary"
-                      onClick={() => {
-                        toggleModal();
-                        changeIcon(icon);
-                      }}
-                    >
-                      <IconComponent size={30} icon={icon} />
-                    </Box>
+            <Flex direction="column" gap={5}>
+              {iconLibraries.length > 0 ? (
+                iconLibraries
+                  .filter(
+                    (iconLibrary) =>
+                      !selectedIconLibrary || iconLibrary.abbreviation === selectedIconLibrary
+                  )
+                  .map((iconLibrary) => (
+                    <>
+                      <Badge>
+                        <Typography>{`${iconLibrary.name} (${iconLibrary.abbreviation})`}</Typography>
+                      </Badge>
+
+                      <Flex direction="row" wrap="wrap" gap={2}>
+                        {allReactIcons.filter((icon) =>
+                          icon.toLowerCase().startsWith(iconLibrary.abbreviation)
+                        ).length > 0 ? (
+                          allReactIcons
+                            .filter((icon) =>
+                              icon.toLowerCase().startsWith(iconLibrary.abbreviation)
+                            )
+                            .map((icon) => (
+                              <Box
+                                key={icon}
+                                variant="secondary"
+                                onClick={() => {
+                                  toggleModal();
+                                  changeIcon(icon);
+                                }}
+                              >
+                                <IconComponent size={30} icon={icon} />
+                              </Box>
+                            ))
+                        ) : (
+                          <Typography variant="pi">
+                            {formatMessage({
+                              id: getTrad('react-icons.iconSelector.noIconsAvailable'),
+                            })}
+                          </Typography>
+                        )}
+                      </Flex>
+                    </>
                   ))
-                ) : (
-                  <Typography variant="pi">No icons available</Typography>
-                )
               ) : (
-                <Typography variant="pi">No icon library selected</Typography>
+                <Typography variant="pi">
+                  {formatMessage({
+                    id: getTrad('react-icons.iconSelector.noIconLibrariesAvailable'),
+                  })}
+                </Typography>
               )}
             </Flex>
           </ModalBody>
           <ModalFooter
             startActions={
               <Select
-                id="iconLibrarySelect"
                 minWidth={500}
-                selectButtonTitle="Select icon library"
-                placeholder="Select icon library"
                 required={0}
                 error={error}
                 value={selectedIconLibrary}
                 onChange={setSelectedIconLibrary}
               >
+                <Option value="">
+                  {formatMessage({ id: getTrad('react-icons.iconSelector.allIconLibraries') })}
+                </Option>
+
                 {iconLibraries.map((iconLibrary) => (
                   <Option key={iconLibrary.id} value={iconLibrary.abbreviation}>
                     {iconLibrary.name}
