@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Flex,
   Button,
-  Box,
+  Badge,
   ModalLayout,
   ModalHeader,
   ModalBody,
@@ -10,15 +10,17 @@ import {
   Typography,
   Select,
   FieldAction,
-  Badge,
   Option,
   TextInput,
+  SearchForm,
+  Searchbar,
 } from '@strapi/design-system';
 import * as ReactIcons from 'react-icons/all';
 import { useIntl, MessageDescriptor } from 'react-intl';
 import { request } from '@strapi/helper-plugin';
-import { IconContext } from 'react-icons/lib';
 import getTrad from '../../utils/getTrad';
+import { IconLibraryComponent } from './IconLibraryComponent';
+import { IconComponent } from './IconComponent';
 
 interface IReactIconsSelector {
   description: null | MessageDescriptor;
@@ -31,26 +33,7 @@ interface IReactIconsSelector {
   value: string;
 }
 
-interface IIconComponent {
-  icon: string;
-  size?: number;
-}
-
-type IReactIcon = keyof typeof ReactIcons;
-
-const strapiTheme = window.localStorage.STRAPI_THEME;
-
-const IconComponent: React.FC<IIconComponent> = ({ icon, size }) => {
-  const DynamicIconComponent = ReactIcons[icon as IReactIcon];
-
-  if (undefined === DynamicIconComponent) return <></>;
-
-  return (
-    <IconContext.Provider value={{ color: strapiTheme === 'light' ? '#212134' : '#a5a5ba' }}>
-      <DynamicIconComponent size={size} />
-    </IconContext.Provider>
-  );
-};
+export type IReactIcon = keyof typeof ReactIcons;
 
 const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
   description,
@@ -68,6 +51,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
   const [selectedIconLibrary, setSelectedIconLibrary] = useState<string | null>(null);
   const allReactIcons = Object.keys(ReactIcons) as IReactIcon[];
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const toggleModal = () => setIsModalVisible((prev) => !prev);
 
@@ -79,6 +63,11 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
         value: newIcon,
       },
     });
+
+  const onSelectIcon = (newIcon: string) => {
+    toggleModal();
+    changeIcon(newIcon);
+  };
 
   useEffect(() => {
     const getIconLibraries = async () => {
@@ -130,56 +119,64 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
             </Typography>
           </ModalHeader>
           <ModalBody>
-            <Flex direction="column" gap={5}>
-              {iconLibraries.length > 0 ? (
-                iconLibraries
-                  .filter(
-                    (iconLibrary) =>
-                      !selectedIconLibrary || iconLibrary.abbreviation === selectedIconLibrary
-                  )
-                  .map((iconLibrary) => (
-                    <>
-                      <Badge>
-                        <Typography>{`${iconLibrary.name} (${iconLibrary.abbreviation})`}</Typography>
-                      </Badge>
-
-                      <Flex direction="row" wrap="wrap" gap={2}>
-                        {allReactIcons.filter((icon) =>
-                          icon.toLowerCase().startsWith(iconLibrary.abbreviation)
-                        ).length > 0 ? (
-                          allReactIcons
-                            .filter((icon) =>
-                              icon.toLowerCase().startsWith(iconLibrary.abbreviation)
-                            )
-                            .map((icon) => (
-                              <Box
-                                key={icon}
-                                variant="secondary"
-                                onClick={() => {
-                                  toggleModal();
-                                  changeIcon(icon);
-                                }}
-                              >
-                                <IconComponent size={30} icon={icon} />
-                              </Box>
-                            ))
-                        ) : (
-                          <Typography variant="pi">
-                            {formatMessage({
-                              id: getTrad('react-icons.iconSelector.noIconsAvailable'),
-                            })}
-                          </Typography>
-                        )}
-                      </Flex>
-                    </>
-                  ))
-              ) : (
-                <Typography variant="pi">
-                  {formatMessage({
-                    id: getTrad('react-icons.iconSelector.noIconLibrariesAvailable'),
+            <Flex direction="column" justifyContent="stretch" alignItems="stretch" gap={5}>
+              <SearchForm>
+                <Searchbar
+                  onClear={() => setSearchTerm('')}
+                  value={searchTerm}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setSearchTerm(e.target.value)
+                  }
+                  placeholder={formatMessage({
+                    id: getTrad('react-icons.iconSelector.search'),
                   })}
-                </Typography>
-              )}
+                >
+                  {formatMessage({
+                    id: getTrad('react-icons.iconSelector.search'),
+                  })}
+                </Searchbar>
+              </SearchForm>
+
+              <Flex
+                direction={searchTerm.length <= 0 ? 'column' : 'row'}
+                wrap="wrap"
+                alignItems="start"
+                gap={searchTerm.length <= 0 ? 5 : 0}
+              >
+                {iconLibraries.length > 0 ? (
+                  iconLibraries
+                    .filter(
+                      (iconLibrary) =>
+                        !selectedIconLibrary || iconLibrary.abbreviation === selectedIconLibrary
+                    )
+                    .map((iconLibrary) => (
+                      <>
+                        {searchTerm.length <= 0 && (
+                          <Badge>
+                            <Typography>{`${iconLibrary.name} (${iconLibrary.abbreviation})`}</Typography>
+                          </Badge>
+                        )}
+
+                        <Flex direction="row" wrap="wrap" gap={2}>
+                          <IconLibraryComponent
+                            icons={allReactIcons.filter(
+                              (icon) =>
+                                icon.toLowerCase().startsWith(iconLibrary.abbreviation) &&
+                                icon.toLowerCase().includes(searchTerm.toLowerCase())
+                            )}
+                            onSelectIcon={onSelectIcon}
+                          />
+                        </Flex>
+                      </>
+                    ))
+                ) : (
+                  <Typography variant="pi">
+                    {formatMessage({
+                      id: getTrad('react-icons.iconSelector.noIconLibrariesAvailable'),
+                    })}
+                  </Typography>
+                )}
+              </Flex>
             </Flex>
           </ModalBody>
           <ModalFooter
