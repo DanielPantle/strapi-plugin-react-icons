@@ -28,6 +28,18 @@ yarn build
 npm run build
 ```
 
+### Strapi plugins config file
+Add `"react-icons": true,` in you strapi plugins file.
+
+If you do not have this file, create a file:
+```
+# in TypeScript: "/config/plugins.ts"
+export default ({ env }) => ({ "react-icons": true, });
+
+# in JavaScript: "/config/plugins.js"
+module.exports = ({ env }) => ({ "react-icons": true, });
+```
+
 ## Usage
 
 ### Usage in strapi
