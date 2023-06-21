@@ -12,7 +12,7 @@
   },
 
   "pluginOptions": {
-    "content-manager": { 
+    "content-manager": {
       "visible": false
     },
 

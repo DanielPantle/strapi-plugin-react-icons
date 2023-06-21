@@ -4,8 +4,8 @@
  *
  */
 
-import React, { useEffect, useState } from "react";
-import { request } from "@strapi/helper-plugin";
+import React, { useEffect, useState } from 'react';
+import { request } from '@strapi/helper-plugin';
 import {
   Button,
   IconButton,
@@ -24,24 +24,24 @@ import {
   ActionLayout,
   Typography,
   VisuallyHidden,
-} from "@strapi/design-system";
-import { Trash } from "@strapi/icons";
-import * as ReactIcons from "react-icons/all";
+} from '@strapi/design-system';
+import { Trash } from '@strapi/icons';
+import * as ReactIcons from 'react-icons/all';
 
 const HomePage = () => {
   const [iconLibraries, setIconLibraries] = useState<IIconLibrary[]>([]);
 
   const getIconLibraries = async () => {
     setIconLibraries([
-      ...(await request("/react-icons/iconlibrary/find", {
-        method: "GET",
+      ...(await request('/react-icons/iconlibrary/find', {
+        method: 'GET',
       })),
     ]);
   };
 
   const updateIconLibrary = async (id: string, isEnabled: boolean) => {
     await request(`/react-icons/iconlibrary/update/${id}`, {
-      method: "PUT",
+      method: 'PUT',
       body: { data: { isEnabled: isEnabled } },
     });
     setIconLibraries((current) => {
@@ -58,17 +58,15 @@ const HomePage = () => {
 
   const deleteIconLibrary = async (id: string) => {
     await request(`/react-icons/iconlibrary/delete/${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
     });
-    setIconLibraries((current) =>
-      current.filter((iconLibrary) => iconLibrary.id !== id)
-    );
+    setIconLibraries((current) => current.filter((iconLibrary) => iconLibrary.id !== id));
   };
 
   const importDefaultIconLibraries = async () => {
-    (await import("../../data/default.json")).default.forEach(async (entry) => {
-      await request("/react-icons/iconlibrary/post", {
-        method: "POST",
+    (await import('../../data/default.json')).default.forEach(async (entry) => {
+      await request('/react-icons/iconlibrary/post', {
+        method: 'POST',
         body: { data: entry },
       });
     });
@@ -81,9 +79,8 @@ const HomePage = () => {
   }, []);
 
   const getIconCount = (abbreviation: string) => {
-    return Object.keys(ReactIcons).filter((icon) =>
-      icon.toLowerCase().startsWith(abbreviation)
-    ).length;
+    return Object.keys(ReactIcons).filter((icon) => icon.toLowerCase().startsWith(abbreviation))
+      .length;
   };
 
   return (
@@ -92,16 +89,14 @@ const HomePage = () => {
       hasRadius={true}
       shadow="filterShadow"
       padding={8}
-      style={{ marginTop: "10px" }}
+      style={{ marginTop: '10px' }}
     >
       <HeaderLayout
         title="react-icons"
         subtitle="Select the react-icon libraries you want to have enabled."
         as="h2"
         primaryAction={
-          <Button onClick={importDefaultIconLibraries}>
-            Import default icon libraries
-          </Button>
+          <Button onClick={importDefaultIconLibraries}>Import default icon libraries</Button>
         }
       />
 
@@ -112,9 +107,7 @@ const HomePage = () => {
               onClick={() =>
                 iconLibraries
                   .filter((iconLibrary) => iconLibrary.isEnabled)
-                  .forEach((iconLibrary) =>
-                    updateIconLibrary(iconLibrary.id, false)
-                  )
+                  .forEach((iconLibrary) => updateIconLibrary(iconLibrary.id, false))
               }
               variant="secondary"
               label="Disable all"
@@ -126,9 +119,7 @@ const HomePage = () => {
             </Button>
             <Button
               onClick={() =>
-                iconLibraries.forEach((iconLibrary) =>
-                  deleteIconLibrary(iconLibrary.id)
-                )
+                iconLibraries.forEach((iconLibrary) => deleteIconLibrary(iconLibrary.id))
               }
               variant="danger"
               label="Delete all"
@@ -173,25 +164,16 @@ const HomePage = () => {
                       <Checkbox
                         id={iconLibrary.id}
                         value={iconLibrary.isEnabled}
-                        onClick={() =>
-                          updateIconLibrary(
-                            iconLibrary.id,
-                            !iconLibrary.isEnabled
-                          )
-                        }
+                        onClick={() => updateIconLibrary(iconLibrary.id, !iconLibrary.isEnabled)}
                       />
                     </Td>
 
                     <Td>
-                      <Typography textColor="neutral800">
-                        {iconLibrary.abbreviation}
-                      </Typography>
+                      <Typography textColor="neutral800">{iconLibrary.abbreviation}</Typography>
                     </Td>
 
                     <Td>
-                      <Typography textColor="neutral800">
-                        {iconLibrary.name}
-                      </Typography>
+                      <Typography textColor="neutral800">{iconLibrary.name}</Typography>
                     </Td>
 
                     <Td>
@@ -212,9 +194,7 @@ const HomePage = () => {
               })
             ) : (
               <Box padding={5}>
-                <Typography variant="pi">
-                  No icon libraries added yet
-                </Typography>
+                <Typography variant="pi">No icon libraries added yet</Typography>
               </Box>
             )}
           </Tbody>

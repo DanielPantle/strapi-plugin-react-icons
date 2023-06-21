@@ -1,4 +1,5 @@
 # Strapi plugin react-icons
+
 A plugin for strapi to select react icons.
 
 ![grafik](https://user-images.githubusercontent.com/34894514/234541590-5146511b-82ad-471f-aaf9-8475c91fc894.png)
@@ -28,13 +29,17 @@ npm run build
 ```
 
 ## Usage
+
 ### Usage in strapi
- - Select your prefered icon libraries on the settings page.
- - Add react-icon as custom field to your content type.
- - Press the search icon to select a icon from any of the selected icon libraries.
+
+- Select your prefered icon libraries on the settings page.
+- Add react-icon as custom field to your content type.
+- Press the search icon to select a icon from any of the selected icon libraries.
 
 ### Usage in React / Next.js
+
 Create the following IconComponent to dynamically show the icon:
+
 ```
 import * as ReactIcons from "react-icons/all";
 
@@ -54,11 +59,13 @@ const IconComponent: React.FC<IIconComponent> = ({ icon, size }) => {
 ```
 
 ## Planned features
- - [x] custom field for react-icons
- - [x] selection modal for the custom field
- - [x] settings page for enabling / disabling icon libraries
- - [ ] default selection for icon library
- - [ ] search in the selection modal
- 
+
+- [x] custom field for react-icons
+- [x] selection modal for the custom field
+- [x] settings page for enabling / disabling icon libraries
+- [ ] default selection for icon library
+- [ ] search in the selection modal
+
 ## Contributing and developing
+
 Feel free to post any PR or issues :)

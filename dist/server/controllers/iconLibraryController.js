@@ -35,5 +35,5 @@ exports.default = ({ strapi }) => ({
         catch (error) {
             ctx.throw(500, error);
         }
-    }
+    },
 });

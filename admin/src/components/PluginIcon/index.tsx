@@ -4,8 +4,8 @@
  *
  */
 
-import React from "react";
-import { DiReact } from "react-icons/di";
+import React from 'react';
+import { DiReact } from 'react-icons/di';
 
 const PluginIcon = () => <DiReact />;
 

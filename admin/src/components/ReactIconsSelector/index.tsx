@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Flex,
   Button,
@@ -12,13 +12,13 @@ import {
   FieldAction,
   Option,
   TextInput,
-} from "@strapi/design-system";
-import * as ReactIcons from "react-icons/all";
-import { Cross } from "@strapi/icons";
-import { SearchIcon } from "@strapi/icons";
-import { useIntl, MessageDescriptor } from "react-intl";
-import { request } from "@strapi/helper-plugin";
-import { IconContext } from "react-icons/lib";
+} from '@strapi/design-system';
+import * as ReactIcons from 'react-icons/all';
+import { Cross } from '@strapi/icons';
+import { SearchIcon } from '@strapi/icons';
+import { useIntl, MessageDescriptor } from 'react-intl';
+import { request } from '@strapi/helper-plugin';
+import { IconContext } from 'react-icons/lib';
 
 interface IReactIconsSelector {
   description: null | MessageDescriptor;
@@ -46,9 +46,7 @@ const IconComponent: React.FC<IIconComponent> = ({ icon, size }) => {
   if (undefined === DynamicIconComponent) return <></>;
 
   return (
-    <IconContext.Provider
-      value={{ color: strapiTheme === "light" ? "#212134" : "#a5a5ba" }}
-    >
+    <IconContext.Provider value={{ color: strapiTheme === 'light' ? '#212134' : '#a5a5ba' }}>
       <DynamicIconComponent size={size} />
     </IconContext.Provider>
   );
@@ -67,9 +65,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
   const { formatMessage } = useIntl();
 
   const [iconLibraries, setIconLibraries] = useState<IIconLibrary[]>([]);
-  const [selectedIconLibrary, setSelectedIconLibrary] = useState<string | null>(
-    null
-  );
+  const [selectedIconLibrary, setSelectedIconLibrary] = useState<string | null>(null);
   const [selectableIcons, setSelectableIcons] = useState([] as IReactIcon[]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -79,7 +75,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
     onChange({
       target: {
         name,
-        type: "string",
+        type: 'string',
         value: newIcon,
       },
     });
@@ -88,8 +84,8 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
     const getIconLibraries = async () => {
       setIconLibraries(
         (
-          await request("/react-icons/iconlibrary/find", {
-            method: "GET",
+          await request('/react-icons/iconlibrary/find', {
+            method: 'GET',
           })
         ).filter((iconLibrary: IIconLibrary) => iconLibrary.isEnabled)
       );
@@ -118,7 +114,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
         onChange={onChange}
         id={name}
         name={name}
-        value={value || ""}
+        value={value || ''}
         required={required}
         error={error}
         startAction={
@@ -128,7 +124,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
         }
         endAction={
           !!value && (
-            <FieldAction onClick={() => changeIcon("")}>
+            <FieldAction onClick={() => changeIcon('')}>
               <ReactIcons.TbX />
             </FieldAction>
           )
