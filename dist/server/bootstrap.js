@@ -5,7 +5,7 @@ exports.default = async ({ strapi }) => {
     const actions = [
         {
             section: 'plugins',
-            displayName: 'React icons',
+            displayName: 'Access react-icons menu',
             uid: 'read',
             pluginName: 'react-icons',
         }
