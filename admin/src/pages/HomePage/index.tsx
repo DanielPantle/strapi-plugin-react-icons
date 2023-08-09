@@ -26,9 +26,12 @@ import {
   VisuallyHidden,
 } from '@strapi/design-system';
 import { Trash } from '@strapi/icons';
+import { Redirect } from 'react-router-dom';
 import * as ReactIcons from 'react-icons/all';
+import usePermissions from '../../hooks/usePermissions';
 
 const HomePage = () => {
+  const { canRead, loading } = usePermissions();
   const [iconLibraries, setIconLibraries] = useState<IIconLibrary[]>([]);
 
   const getIconLibraries = async () => {
@@ -75,13 +78,19 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    if (!canRead) return;
+
     getIconLibraries();
-  }, []);
+  }, [canRead]);
 
   const getIconCount = (abbreviation: string) => {
     return Object.keys(ReactIcons).filter((icon) => icon.toLowerCase().startsWith(abbreviation))
       .length;
   };
+
+  if (loading) return null;
+
+  if (!canRead) return <Redirect to="/" />;
 
   return (
     <Layout
