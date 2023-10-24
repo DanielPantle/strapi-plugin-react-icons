@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { request } from '@strapi/helper-plugin';
+import { useFetchClient } from '@strapi/helper-plugin';
 import {
   Button,
   IconButton,
@@ -32,20 +32,18 @@ import usePermissions from '../../hooks/usePermissions';
 
 const HomePage = () => {
   const { canRead, loading } = usePermissions();
+  const { get, put, del, post } = useFetchClient();
   const [iconLibraries, setIconLibraries] = useState<IIconLibrary[]>([]);
 
   const getIconLibraries = async () => {
     setIconLibraries([
-      ...(await request('/react-icons/iconlibrary/find', {
-        method: 'GET',
-      })),
+      ...(await get('/react-icons/iconlibrary/find')).data,
     ]);
   };
 
   const updateIconLibrary = async (id: string, isEnabled: boolean) => {
-    await request(`/react-icons/iconlibrary/update/${id}`, {
-      method: 'PUT',
-      body: { data: { isEnabled: isEnabled } },
+    await put(`/react-icons/iconlibrary/update/${id}`, {
+      data: { isEnabled: isEnabled }
     });
     setIconLibraries((current) => {
       return current.map((iconLibrary) =>
@@ -60,17 +58,14 @@ const HomePage = () => {
   };
 
   const deleteIconLibrary = async (id: string) => {
-    await request(`/react-icons/iconlibrary/delete/${id}`, {
-      method: 'DELETE',
-    });
+    await del(`/react-icons/iconlibrary/delete/${id}`);
     setIconLibraries((current) => current.filter((iconLibrary) => iconLibrary.id !== id));
   };
 
   const importDefaultIconLibraries = async () => {
     (await import('../../data/default.json')).default.forEach(async (entry) => {
-      await request('/react-icons/iconlibrary/post', {
-        method: 'POST',
-        body: { data: entry },
+      await post('/react-icons/iconlibrary/post', {
+        data: entry,
       });
     });
 
