@@ -62,6 +62,12 @@ export default {
         defaultMessage: name,
       },
       Component: async () => await import(/* webpackChunkName: "[request]" */ './pages/HomePage'),
+      permissions: [
+        {
+          action: 'plugin::react-icons.read',
+          subject: null,
+        },
+      ],
     });
     const plugin = {
       id: pluginId,
