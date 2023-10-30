@@ -14,10 +14,11 @@ import {
   TextInput,
   SearchForm,
   Searchbar,
+  Box,
 } from '@strapi/design-system';
 import * as ReactIcons from 'react-icons/all';
 import { useIntl, MessageDescriptor } from 'react-intl';
-import { request } from '@strapi/helper-plugin';
+import { useFetchClient } from '@strapi/helper-plugin';
 import getTrad from '../../utils/getTrad';
 import { IconLibraryComponent } from './IconLibraryComponent';
 import { IconComponent } from './IconComponent';
@@ -46,6 +47,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
   value,
 }) => {
   const { formatMessage } = useIntl();
+  const {get} = useFetchClient()
 
   const [iconLibraries, setIconLibraries] = useState<IIconLibrary[]>([]);
   const [selectedIconLibrary, setSelectedIconLibrary] = useState<string | null>(null);
@@ -73,9 +75,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
     const getIconLibraries = async () => {
       setIconLibraries(
         (
-          await request('/react-icons/iconlibrary/find', {
-            method: 'GET',
-          })
+          (await get('/react-icons/iconlibrary/find')).data
         ).filter((iconLibrary: IIconLibrary) => iconLibrary.isEnabled)
       );
     };
@@ -150,7 +150,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
                         !selectedIconLibrary || iconLibrary.abbreviation === selectedIconLibrary
                     )
                     .map((iconLibrary) => (
-                      <>
+                      <Box key={iconLibrary.abbreviation}>
                         {searchTerm.length <= 0 && (
                           <Badge>
                             <Typography>{`${iconLibrary.name} (${iconLibrary.abbreviation})`}</Typography>
@@ -167,7 +167,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
                             onSelectIcon={onSelectIcon}
                           />
                         </Flex>
-                      </>
+                      </Box>
                     ))
                 ) : (
                   <Typography variant="pi">
