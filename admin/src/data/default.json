@@ -25,7 +25,5 @@
   { "abbreviation": "ti", "name": "Typicons" },
   { "abbreviation": "vsc", "name": "VS Code Icons" },
   { "abbreviation": "wi", "name": "Weather Icons" },
-  { "abbreviation": "cg", "name": "css.gg" },
-  { "abbreviation": "lu", "name": "Lucid" },
-  { "abbreviation": "fa6", "name": "Font Awesome 6" }
+  { "abbreviation": "cg", "name": "css.gg" }
 ]
