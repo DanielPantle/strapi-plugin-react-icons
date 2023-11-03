@@ -146,7 +146,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
               </SearchForm>
 
                 {iconLibraries.length > 0 ? (
-                  <Box padding={4} background="neutral0">
+                  <Box padding={4} marginTop={2} background="neutral0">
                     <AccordionGroup>
                     {
                       iconLibraries
