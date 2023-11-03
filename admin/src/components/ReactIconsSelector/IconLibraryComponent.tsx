@@ -17,8 +17,9 @@ export const IconLibraryComponent: React.FC<IIconLibraryComponent> = ({ icons, o
           onClick={() => {
             onSelectIcon(icon);
           }}
+          title={icon}
         >
-          <IconComponent size={30} icon={icon} />
+            <IconComponent size={30} icon={icon} />
         </Box>
       ))}
     </>
