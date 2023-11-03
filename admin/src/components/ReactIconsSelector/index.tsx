@@ -22,6 +22,7 @@ import { useFetchClient } from '@strapi/helper-plugin';
 import getTrad from '../../utils/getTrad';
 import { IconLibraryComponent } from './IconLibraryComponent';
 import { IconComponent } from './IconComponent';
+import { Accordion, AccordionToggle, AccordionContent, AccordionGroup } from '@strapi/design-system';
 
 interface IReactIconsSelector {
   description: null | MessageDescriptor;
@@ -83,6 +84,13 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
     getIconLibraries();
   }, []);
 
+  const [expandedIDs, setExpandedID] = useState<string[]>(['acc-0']);
+  const handleToggle = (id: string) => () => {
+    expandedIDs?.includes(id) ?
+      setExpandedID(expandedIDs.filter((i) => i !== id)) :
+      setExpandedID([...expandedIDs, id]);
+  };
+
   return (
     <>
       <TextInput
@@ -119,7 +127,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
             </Typography>
           </ModalHeader>
           <ModalBody>
-            <Flex direction="column" justifyContent="stretch" alignItems="stretch" gap={5}>
+            <Box>
               <SearchForm>
                 <Searchbar
                   onClear={() => setSearchTerm('')}
@@ -137,38 +145,51 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
                 </Searchbar>
               </SearchForm>
 
-              <Flex
-                direction={searchTerm.length <= 0 ? 'column' : 'row'}
-                wrap="wrap"
-                alignItems="start"
-                gap={searchTerm.length <= 0 ? 5 : 0}
-              >
                 {iconLibraries.length > 0 ? (
-                  iconLibraries
-                    .filter(
-                      (iconLibrary) =>
-                        !selectedIconLibrary || iconLibrary.abbreviation === selectedIconLibrary
-                    )
-                    .map((iconLibrary) => (
-                      <Box key={iconLibrary.abbreviation}>
-                        {searchTerm.length <= 0 && (
-                          <Badge>
-                            <Typography>{`${iconLibrary.name} (${iconLibrary.abbreviation})`}</Typography>
-                          </Badge>
-                        )}
-
-                        <Flex direction="row" wrap="wrap" gap={2}>
-                          <IconLibraryComponent
-                            icons={allReactIcons.filter(
-                              (icon) =>
-                                icon.toLowerCase().startsWith(iconLibrary.abbreviation) &&
-                                icon.toLowerCase().includes(searchTerm.toLowerCase())
-                            )}
-                            onSelectIcon={onSelectIcon}
-                          />
-                        </Flex>
-                      </Box>
-                    ))
+                  <Box padding={4} background="neutral0">
+                    <AccordionGroup>
+                    {
+                      iconLibraries
+                        .filter(
+                          (iconLibrary) =>
+                            !selectedIconLibrary || iconLibrary.abbreviation === selectedIconLibrary
+                        )
+                        .map((iconLibrary, index) => (
+                          allReactIcons.filter(
+                            (icon) =>
+                              icon.toLowerCase().startsWith(iconLibrary.abbreviation) &&
+                              icon.toLowerCase().includes(searchTerm.toLowerCase())
+                          ).length > 0 &&
+                          <Accordion expanded={expandedIDs.includes('acc-'+index)} onToggle={handleToggle('acc-'+index)} id={"acc-"+index} size="S">
+                            <AccordionToggle
+                              togglePosition="left"
+                              title={<Typography>{`${iconLibrary.name} (${iconLibrary.abbreviation})`}</Typography>}
+                              action={<Badge>{allReactIcons.filter(
+                                (icon) =>
+                                  icon.toLowerCase().startsWith(iconLibrary.abbreviation) &&
+                                  icon.toLowerCase().includes(searchTerm.toLowerCase())
+                              ).length}</Badge>}
+                            >
+                            </AccordionToggle>
+                            <AccordionContent>
+                              <Box paddingLeft={3} paddingTop={3} paddingBottom={3}>
+                                <Flex direction="row" wrap="wrap" display="flex" alignItems="center" gap={1}>
+                                  <IconLibraryComponent
+                                    icons={allReactIcons.filter(
+                                      (icon) =>
+                                        icon.toLowerCase().startsWith(iconLibrary.abbreviation) &&
+                                        icon.toLowerCase().includes(searchTerm.toLowerCase())
+                                    )}
+                                    onSelectIcon={onSelectIcon}
+                                  />
+                                </Flex>
+                              </Box>
+                            </AccordionContent>
+                          </Accordion>
+                        ))
+                    }
+                  </AccordionGroup>
+                  </Box>
                 ) : (
                   <Typography variant="pi">
                     {formatMessage({
@@ -176,8 +197,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
                     })}
                   </Typography>
                 )}
-              </Flex>
-            </Flex>
+              </Box>
           </ModalBody>
           <ModalFooter
             startActions={
