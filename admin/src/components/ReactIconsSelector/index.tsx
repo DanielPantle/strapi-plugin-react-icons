@@ -29,6 +29,7 @@ import getTrad from '../../utils/getTrad';
 import {IconLibraryComponent} from './IconLibraryComponent';
 import {IconComponent} from './IconComponent';
 import {Minus, Plus} from "@strapi/icons";
+import { icons } from 'react-icons';
 
 interface IReactIconsSelector {
   description: null | MessageDescriptor;
@@ -91,12 +92,19 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
   }, []);
 
   const [expandedIDs, setExpandedID] = useState<string[]>([]);
-  const [expandedAll, setExpandedAll] = useState<boolean>(false);
   const handleToggle = (id: string) => () => {
     expandedIDs?.includes(id) ?
       setExpandedID(expandedIDs.filter((i) => i !== id)) :
       setExpandedID([...expandedIDs, id]);
   };
+
+  const handleExpand = () => {
+    if(iconLibraries.length === expandedIDs.length){
+      setExpandedID([])
+    } else{
+      setExpandedID(iconLibraries.map((iconLibrary, index) => 'acc-' + index ));
+    }
+  }
 
   return (
     <>
@@ -155,10 +163,10 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
                   </GridItem>
                   <GridItem key={2} col={2}>
                     {
-                      expandedAll ?
-                        <Button size="L" onClick={() => setExpandedAll(false)}
+                      iconLibraries.length === expandedIDs.length ?
+                        <Button size="L" onClick={handleExpand}
                                 startIcon={<Minus/>}>Collapse</Button> :
-                        <Button size="L" onClick={() => setExpandedAll(true)}
+                        <Button size="L" onClick={handleExpand}
                                 startIcon={<Plus/>}>Expand</Button>
                     }
                   </GridItem>
@@ -180,7 +188,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
                               icon.toLowerCase().startsWith(iconLibrary.abbreviation) &&
                               icon.toLowerCase().includes(searchTerm.toLowerCase())
                           ).length > 0 &&
-                          <Accordion expanded={expandedIDs.includes('acc-' + index) || expandedAll}
+                          <Accordion expanded={expandedIDs.includes('acc-' + index)}
                                      onToggle={handleToggle('acc-' + index)} id={"acc-" + index} size="S">
                             <AccordionToggle
                               togglePosition="left"
