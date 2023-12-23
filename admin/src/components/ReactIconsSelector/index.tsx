@@ -1,27 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Flex,
-  Button,
+  Accordion,
+  AccordionContent,
+  AccordionGroup,
+  AccordionToggle,
   Badge,
-  ModalLayout,
-  ModalHeader,
+  Box,
+  Button,
+  FieldAction,
+  Flex,
   ModalBody,
   ModalFooter,
-  Typography,
-  Select,
-  FieldAction,
+  ModalHeader,
+  ModalLayout,
   Option,
-  TextInput,
-  SearchForm,
   Searchbar,
-  Box,
+  SearchForm,
+  Select,
+  TextInput,
+  Typography,
+  Grid,
+  GridItem,
 } from '@strapi/design-system';
 import * as ReactIcons from 'react-icons/all';
-import { useIntl, MessageDescriptor } from 'react-intl';
-import { useFetchClient } from '@strapi/helper-plugin';
+import {MessageDescriptor, useIntl} from 'react-intl';
+import {useFetchClient} from '@strapi/helper-plugin';
 import getTrad from '../../utils/getTrad';
-import { IconLibraryComponent } from './IconLibraryComponent';
-import { IconComponent } from './IconComponent';
+import {IconLibraryComponent} from './IconLibraryComponent';
+import {IconComponent} from './IconComponent';
+import {Minus, Plus} from "@strapi/icons";
+import { icons } from 'react-icons';
 
 interface IReactIconsSelector {
   description: null | MessageDescriptor;
@@ -37,16 +45,16 @@ interface IReactIconsSelector {
 export type IReactIcon = keyof typeof ReactIcons;
 
 const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
-  description,
-  error,
-  intlLabel,
-  placeholder,
-  name,
-  required,
-  onChange,
-  value,
-}) => {
-  const { formatMessage } = useIntl();
+                                                             description,
+                                                             error,
+                                                             intlLabel,
+                                                             placeholder,
+                                                             name,
+                                                             required,
+                                                             onChange,
+                                                             value,
+                                                           }) => {
+  const {formatMessage} = useIntl();
   const {get} = useFetchClient()
 
   const [iconLibraries, setIconLibraries] = useState<IIconLibrary[]>([]);
@@ -83,6 +91,21 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
     getIconLibraries();
   }, []);
 
+  const [expandedIDs, setExpandedID] = useState<string[]>([]);
+  const handleToggle = (id: string) => () => {
+    expandedIDs?.includes(id) ?
+      setExpandedID(expandedIDs.filter((i) => i !== id)) :
+      setExpandedID([...expandedIDs, id]);
+  };
+
+  const handleExpand = () => {
+    if(iconLibraries.length === expandedIDs.length){
+      setExpandedID([])
+    } else{
+      setExpandedID(iconLibraries.map((iconLibrary, index) => 'acc-' + index ));
+    }
+  }
+
   return (
     <>
       <TextInput
@@ -99,13 +122,13 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
         error={error}
         startAction={
           <FieldAction onClick={toggleModal}>
-            {value ? <IconComponent icon={value} /> : <ReactIcons.TbSearch />}
+            {value ? <IconComponent icon={value}/> : <ReactIcons.TbSearch/>}
           </FieldAction>
         }
         endAction={
           !!value && (
             <FieldAction onClick={() => changeIcon('')}>
-              <ReactIcons.TbX />
+              <ReactIcons.TbX/>
             </FieldAction>
           )
         }
@@ -119,65 +142,91 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
             </Typography>
           </ModalHeader>
           <ModalBody>
-            <Flex direction="column" justifyContent="stretch" alignItems="stretch" gap={5}>
+            <Box>
               <SearchForm>
-                <Searchbar
-                  onClear={() => setSearchTerm('')}
-                  value={searchTerm}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setSearchTerm(e.target.value)
-                  }
-                  placeholder={formatMessage({
-                    id: getTrad('react-icons.iconSelector.search'),
-                  })}
-                >
-                  {formatMessage({
-                    id: getTrad('react-icons.iconSelector.search'),
-                  })}
-                </Searchbar>
+                <Grid gap={2}>
+                  <GridItem key={1} col={10}>
+                    <Searchbar
+                      onClear={() => setSearchTerm('')}
+                      value={searchTerm}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSearchTerm(e.target.value)
+                      }
+                      placeholder={formatMessage({
+                        id: getTrad('react-icons.iconSelector.search'),
+                      })}
+                    >
+                      {formatMessage({
+                        id: getTrad('react-icons.iconSelector.search'),
+                      })}
+                    </Searchbar>
+                  </GridItem>
+                  <GridItem key={2} col={2}>
+                    {
+                      iconLibraries.length === expandedIDs.length ?
+                        <Button size="L" onClick={handleExpand}
+                                startIcon={<Minus/>}>Collapse</Button> :
+                        <Button size="L" onClick={handleExpand}
+                                startIcon={<Plus/>}>Expand</Button>
+                    }
+                  </GridItem>
+                </Grid>
               </SearchForm>
 
-              <Flex
-                direction={searchTerm.length <= 0 ? 'column' : 'row'}
-                wrap="wrap"
-                alignItems="start"
-                gap={searchTerm.length <= 0 ? 5 : 0}
-              >
-                {iconLibraries.length > 0 ? (
-                  iconLibraries
-                    .filter(
-                      (iconLibrary) =>
-                        !selectedIconLibrary || iconLibrary.abbreviation === selectedIconLibrary
-                    )
-                    .map((iconLibrary) => (
-                      <Box key={iconLibrary.abbreviation}>
-                        {searchTerm.length <= 0 && (
-                          <Badge>
-                            <Typography>{`${iconLibrary.name} (${iconLibrary.abbreviation})`}</Typography>
-                          </Badge>
-                        )}
-
-                        <Flex direction="row" wrap="wrap" gap={2}>
-                          <IconLibraryComponent
-                            icons={allReactIcons.filter(
-                              (icon) =>
-                                icon.toLowerCase().startsWith(iconLibrary.abbreviation) &&
-                                icon.toLowerCase().includes(searchTerm.toLowerCase())
-                            )}
-                            onSelectIcon={onSelectIcon}
-                          />
-                        </Flex>
-                      </Box>
-                    ))
-                ) : (
-                  <Typography variant="pi">
-                    {formatMessage({
-                      id: getTrad('react-icons.iconSelector.noIconLibrariesAvailable'),
-                    })}
-                  </Typography>
-                )}
-              </Flex>
-            </Flex>
+              {iconLibraries.length > 0 ? (
+                <Box padding={4} marginTop={2} background="neutral0">
+                  <AccordionGroup>
+                    {
+                      iconLibraries
+                        .filter(
+                          (iconLibrary) =>
+                            !selectedIconLibrary || iconLibrary.abbreviation === selectedIconLibrary
+                        )
+                        .map((iconLibrary, index) => (
+                          allReactIcons.filter(
+                            (icon) =>
+                              icon.toLowerCase().startsWith(iconLibrary.abbreviation) &&
+                              icon.toLowerCase().includes(searchTerm.toLowerCase())
+                          ).length > 0 &&
+                          <Accordion expanded={expandedIDs.includes('acc-' + index)}
+                                     onToggle={handleToggle('acc-' + index)} id={"acc-" + index} size="S">
+                            <AccordionToggle
+                              togglePosition="left"
+                              title={<Typography>{`${iconLibrary.name} (${iconLibrary.abbreviation})`}</Typography>}
+                              action={<Badge>{allReactIcons.filter(
+                                (icon) =>
+                                  icon.toLowerCase().startsWith(iconLibrary.abbreviation) &&
+                                  icon.toLowerCase().includes(searchTerm.toLowerCase())
+                              ).length}</Badge>}
+                            >
+                            </AccordionToggle>
+                            <AccordionContent>
+                              <Box paddingLeft={3} paddingTop={3} paddingBottom={3}>
+                                <Flex direction="row" wrap="wrap" display="flex" alignItems="center" gap={1}>
+                                  <IconLibraryComponent
+                                    icons={allReactIcons.filter(
+                                      (icon) =>
+                                        icon.toLowerCase().startsWith(iconLibrary.abbreviation) &&
+                                        icon.toLowerCase().includes(searchTerm.toLowerCase())
+                                    )}
+                                    onSelectIcon={onSelectIcon}
+                                  />
+                                </Flex>
+                              </Box>
+                            </AccordionContent>
+                          </Accordion>
+                        ))
+                    }
+                  </AccordionGroup>
+                </Box>
+              ) : (
+                <Typography variant="pi">
+                  {formatMessage({
+                    id: getTrad('react-icons.iconSelector.noIconLibrariesAvailable'),
+                  })}
+                </Typography>
+              )}
+            </Box>
           </ModalBody>
           <ModalFooter
             startActions={
@@ -189,7 +238,7 @@ const ReactIconsSelector: React.FC<IReactIconsSelector> = ({
                 onChange={setSelectedIconLibrary}
               >
                 <Option value="">
-                  {formatMessage({ id: getTrad('react-icons.iconSelector.allIconLibraries') })}
+                  {formatMessage({id: getTrad('react-icons.iconSelector.allIconLibraries')})}
                 </Option>
 
                 {iconLibraries.map((iconLibrary) => (
