@@ -1,54 +1,54 @@
 {
-	"name": "strapi-plugin-react-icons",
-	"version": "0.2.1",
-	"description": "A plugin for strapi to select react icons.",
-	"license": "MIT",
-	"author": {
-		"name": "Daniel Pantle"
-	},
-	"maintainers": [
-		{
-			"name": "Daniel Pantle"
-		}
-	],
-	"scripts": {
-		"build": "tsc -p tsconfig.server.json",
-		"develop": "tsc -p tsconfig.server.json -w"
-	},
-	"dependencies": {
-		"@strapi/design-system": "^1.13.1",
-		"@strapi/helper-plugin": "^4.16.2",
-		"@strapi/icons": "^1.13.0",
-		"prop-types": "^15.8.1",
-		"react-icons": "5.1.0"
-	},
-	"devDependencies": {
-		"@strapi/typescript-utils": "^4.16.2",
-		"@types/react": "^18.2.45",
-		"@types/react-dom": "^18.2.18",
-		"@types/react-router-dom": "^5.3.3",
-		"@types/styled-components": "^5.1.34",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"react-router-dom": "^5.3.4",
-		"styled-components": "^5.3.11",
-		"typescript": "5.3.3"
-	},
-	"peerDependencies": {
-		"@strapi/strapi": "^4.14.5",
-		"react": "^17.0.0 || ^18.0.0",
-		"react-dom": "^17.0.0 || ^18.0.0",
-		"react-router-dom": "^5.3.4",
-		"styled-components": "^5.3.3 || ^6.1.0"
-	},
-	"engines": {
-		"node": ">=14.19.1 <=20.x.x",
-		"npm": ">=6.0.0"
-	},
-	"strapi": {
-		"name": "react-icons",
-		"displayName": "React Icons",
-		"description": "A plugin for strapi to select react icons.",
-		"kind": "plugin"
-	}
+  "name": "strapi-plugin-react-icons",
+  "version": "0.2.1",
+  "description": "A plugin for strapi to select react icons.",
+  "license": "MIT",
+  "author": {
+    "name": "Daniel Pantle"
+  },
+  "maintainers": [
+    {
+      "name": "Daniel Pantle"
+    }
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.server.json",
+    "develop": "tsc -p tsconfig.server.json -w"
+  },
+  "dependencies": {
+    "@strapi/design-system": "^1.13.1",
+    "@strapi/helper-plugin": "^4.16.2",
+    "@strapi/icons": "^1.13.0",
+    "prop-types": "^15.8.1",
+    "react-icons": "5.1.0"
+  },
+  "devDependencies": {
+    "@strapi/typescript-utils": "^4.16.2",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/styled-components": "^5.1.34",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^5.3.4",
+    "styled-components": "^5.3.11",
+    "typescript": "5.3.3"
+  },
+  "peerDependencies": {
+    "@strapi/strapi": "^4.14.5",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^5.3.4",
+    "styled-components": "^5.3.3 || ^6.1.0"
+  },
+  "engines": {
+    "node": ">=14.19.1 <=20.x.x",
+    "npm": ">=6.0.0"
+  },
+  "strapi": {
+    "name": "react-icons",
+    "displayName": "React Icons",
+    "description": "A plugin for strapi to select react icons.",
+    "kind": "plugin"
+  }
 }
