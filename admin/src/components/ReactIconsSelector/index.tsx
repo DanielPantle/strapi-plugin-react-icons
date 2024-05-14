@@ -22,7 +22,7 @@ import {
   Grid,
   GridItem,
 } from '@strapi/design-system';
-import * as ReactIcons from 'react-icons/all';
+import * as ReactIcons from '../../all';
 import {MessageDescriptor, useIntl} from 'react-intl';
 import {useFetchClient} from '@strapi/helper-plugin';
 import getTrad from '../../utils/getTrad';

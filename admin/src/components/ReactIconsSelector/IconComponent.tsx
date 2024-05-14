@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconContext } from 'react-icons/lib';
-import * as ReactIcons from 'react-icons/all';
+import * as ReactIcons from '../../all';
 import { IReactIcon } from '.';
 
 interface IIconComponent {

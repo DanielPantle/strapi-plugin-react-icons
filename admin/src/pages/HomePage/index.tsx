@@ -27,7 +27,7 @@ import {
 } from '@strapi/design-system';
 import { Trash } from '@strapi/icons';
 import { Redirect } from 'react-router-dom';
-import * as ReactIcons from 'react-icons/all';
+import * as ReactIcons from '../../all';
 import usePermissions from '../../hooks/usePermissions';
 
 const HomePage = () => {
