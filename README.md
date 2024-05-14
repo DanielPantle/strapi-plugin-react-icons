@@ -3,7 +3,7 @@
 A plugin for strapi to select react icons.
 
 ![grafik](https://user-images.githubusercontent.com/34894514/234541590-5146511b-82ad-471f-aaf9-8475c91fc894.png)
-![grafik](https://user-images.githubusercontent.com/34894514/234541920-c5b65ba0-51cd-4da5-9a9f-00937309a869.png)
+![react-icons](https://github.com/DanielPantle/strapi-plugin-react-icons/assets/34894514/895596d2-b0b8-4dc9-8129-bd5449dfee72)
 ![grafik](https://user-images.githubusercontent.com/34894514/234541742-0b257d6c-d38e-43ca-af83-bd6af1dcff9e.png)
 
 ## Installation
@@ -46,25 +46,25 @@ module.exports = ({ env }) => ({ "react-icons": true, });
 
 - Select your prefered icon libraries on the settings page.
 - Add react-icon as custom field to your content type.
-- Press the search icon to select a icon from any of the selected icon libraries.
+- Press the search icon to select an icon from any of the selected icon libraries.
 
 ### Usage in React / Next.js
 
 Create the following IconComponent to dynamically show the icon:
 
 ```
-import * as ReactIcons from "react-icons/all";
+import loadable from '@loadable/component';
+import { IconType } from 'react-icons';
 
 interface IIconComponent {
   icon: string;
   size?: number;
 }
-type IReactIcon = keyof typeof ReactIcons;
+export type IReactIcon = string;
 
-const IconComponent: React.FC<IIconComponent> = ({ icon, size }) => {
-  const DynamicIconComponent = ReactIcons[icon as IReactIcon];
-
-  if (undefined === DynamicIconComponent) return <></>;
+export const IconComponent: React.FC<IIconComponent> = ({ icon, size }) => {
+  const lib = icon.replace(/([a-z0-9])([A-Z])/g, '$1 $2').split(' ')[0].toLowerCase();
+  const DynamicIconComponent = loadable(() => import(`react-icons/${lib}/index.js`), { resolveComponent: (el) => el[icon] }) as IconType;
 
   return <DynamicIconComponent size={size} />;
 };
@@ -76,7 +76,7 @@ const IconComponent: React.FC<IIconComponent> = ({ icon, size }) => {
 - [x] selection modal for the custom field
 - [x] settings page for enabling / disabling icon libraries
 - [ ] default selection for icon library
-- [ ] search in the selection modal
+- [x] search in the selection modal
 
 ## Contributing and developing
 
